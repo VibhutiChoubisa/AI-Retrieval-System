@@ -126,6 +126,46 @@ All systems are evaluated using:
 
 ---
 
+## 📁 Project Structure
+
+```bash
+retrieval-benchmark/
+│
+├── data/
+│   ├── raw/
+│   │   ├── extract_docs.py
+│   │   └── urls.txt
+│   │
+│   └── processed/
+│       └── documents.json
+│
+├── evaluation/
+│   ├── evaluate.py
+│   ├── metrics.py
+│   ├── plots.py
+│   ├── report.py
+│   └── failure_analysis.py
+│
+├── retrieval/
+│   ├── bm25_baseline.py
+│   ├── dense.py
+│   ├── hybrid.py
+│   └── reranker.py
+│
+├── queries/
+│   └── benchmark_queries.json
+│
+├── results/
+│   ├── tradeoff.png
+│   ├── failure_dist.png
+│   └── report.md
+│
+├── Makefile
+├── README.md
+└── requirements.txt
+```
+
+---
 ## ⚙️ Reproducibility
 
 This project is fully reproducible on a single machine without requiring any specialized infrastructure.
