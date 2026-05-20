@@ -1,5 +1,78 @@
 # Retrieval Benchmark System (BM25 + Dense + Hybrid + Reranker)
 
+## 🎯 Why I chose Assignment 1 (Retrieval Benchmarking)
+
+I selected **Assignment 1: Retrieval, Honest Comparison** over the Agent (Assignment 2) and Context Compression (Assignment 3) because it best matches both the **engineering problem structure of real-world retrieval systems** and the **type of evaluation I wanted to demonstrate: measurable, controllable, and failure-driven comparison across architectures**.
+
+---
+
+### 🧠 Why not Assignment 2 (Agent + Tools)
+
+While agent-based systems are powerful, they introduce multiple confounding variables:
+
+- LLM-driven tool selection adds stochastic behavior unrelated to retrieval quality
+- Failures often come from **prompting or tool routing**, not system design
+- Evaluation becomes harder to isolate and less reproducible
+
+I wanted a problem where:
+> system differences are architectural, not prompt-dependent
+
+Retrieval systems provide that clarity — BM25 vs Dense vs Hybrid is a **clean controlled comparison axis**.
+
+---
+
+### 🧠 Why not Assignment 3 (Context Compression)
+
+Assignment 3 focuses on:
+- long-context optimization
+- summarization strategies
+- token efficiency vs reasoning preservation
+
+However, it introduces challenges that are orthogonal to retrieval:
+
+- heavy dependence on LLM judgment scoring
+- ambiguity in defining “correct compression”
+- evaluation noise due to generative summarization variance
+
+I chose not to pursue this because:
+> the evaluation signal is less stable and harder to make defensible under strict benchmarking conditions
+
+---
+
+### 🔍 Why Assignment 1 was the best fit
+
+Assignment 1 directly matches **core retrieval system engineering problems** used in:
+
+- RAG pipelines
+- enterprise search engines
+- robotics knowledge systems
+- semantic search stacks
+
+It allows a clean experimental structure:
+
+- Same corpus
+- Same queries
+- Multiple retrieval architectures
+- Deterministic evaluation metrics (Recall@5, MRR, p95 latency)
+
+This makes it possible to make a **defensible claim about system performance**, which is the exact goal of the assignment.
+
+---
+
+### ⚙️ Key Reasoning Summary
+
+I chose Assignment 1 because it:
+
+- isolates retrieval quality as the primary variable
+- enables fair system comparison under controlled conditions
+- produces reproducible, quantitative results
+- reflects real production retrieval evaluation workflows
+- allows meaningful analysis of accuracy–latency trade-offs
+
+In contrast, Assignments 2 and 3 introduce additional layers of model behavior that would obscure the central comparison objective.
+
+--- 
+
 ## 🚀 Overview
 
 This project implements a **retrieval benchmarking framework** to compare classical, neural, and hybrid search systems under identical evaluation conditions.
