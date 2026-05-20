@@ -1,0 +1,95 @@
+[
+  {
+    "query": "What is a ROS2 node and how does it work?",
+    "relevant_urls": ["https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Nodes/Understanding-ROS2-Nodes.html"]
+  },
+  {
+    "query": "How do I install ROS2 on Ubuntu?",
+    "relevant_urls": ["https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html"]
+  },
+  {
+    "query": "How do ROS2 topics enable communication?",
+    "relevant_urls": ["https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Topics/Understanding-ROS2-Topics.html"]
+  },
+  {
+    "query": "Explain ROS2 services vs actions",
+    "relevant_urls": [
+      "https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Services/Understanding-ROS2-Services.html",
+      "https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Actions/Understanding-ROS2-Actions.html"
+    ]
+  },
+  {
+    "query": "How do I launch multiple ROS2 nodes?",
+    "relevant_urls": ["https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Launching-Multiple-Nodes/Launching-Multiple-Nodes.html"]
+  },
+
+  {
+    "query": "What is MoveIt motion planning?",
+    "relevant_urls": ["https://moveit.picknik.ai/main/doc/concepts/motion_planning.html"]
+  },
+  {
+    "query": "How do I use MoveIt Python API?",
+    "relevant_urls": ["https://moveit.picknik.ai/main/doc/examples/motion_planning_python_api/motion_planning_python_api_tutorial.html"]
+  },
+  {
+    "query": "How does MoveIt handle collision checking?",
+    "relevant_urls": ["https://moveit.picknik.ai/main/doc/examples/visualizing_collisions/visualizing_collisions_tutorial.html"]
+  },
+  {
+    "query": "What is planning scene in MoveIt?",
+    "relevant_urls": ["https://moveit.picknik.ai/main/doc/examples/planning_scene/planning_scene_tutorial.html"]
+  },
+  {
+    "query": "How does kinematics work in MoveIt?",
+    "relevant_urls": ["https://moveit.picknik.ai/main/doc/concepts/kinematics.html"]
+  },
+
+  {
+    "query": "How to install Gazebo simulator?",
+    "relevant_urls": ["https://gazebosim.org/docs/latest/install/"]
+  },
+  {
+    "query": "How do sensors work in Gazebo?",
+    "relevant_urls": ["https://gazebosim.org/docs/latest/sensors/"]
+  },
+  {
+    "query": "How to spawn a robot in Gazebo?",
+    "relevant_urls": ["https://gazebosim.org/docs/latest/spawn_urdf/"]
+  },
+  {
+    "query": "How does Gazebo physics engine work?",
+    "relevant_urls": ["https://gazebosim.org/api/physics/9/physicsconcepts.html"]
+  },
+
+  {
+    "query": "How does UR robot communicate with ROS2?",
+    "relevant_urls": ["https://docs.universal-robots.com/Universal_Robots_ROS_Documentation/rolling/doc/ur_client_library/doc/architecture.html"]
+  },
+  {
+    "query": "How do I start UR robot driver?",
+    "relevant_urls": ["https://docs.universal-robots.com/Universal_Robots_ROS_Documentation/rolling/doc/ur_tutorials/my_robot_cell/doc/start_ur_driver.html"]
+  },
+  {
+    "query": "How is UR URDF assembled?",
+    "relevant_urls": ["https://docs.universal-robots.com/Universal_Robots_ROS_Documentation/rolling/doc/ur_tutorials/my_robot_cell/doc/assemble_urdf.html"]
+  },
+  {
+    "query": "What is UR simulation in Gazebo?",
+    "relevant_urls": ["https://docs.universal-robots.com/Universal_Robots_ROS_Documentation/rolling/doc/ur_simulation_gz/ur_simulation_gz/doc/index.html"]
+  },
+
+  {
+    "query": "What is robot motion planning pipeline end-to-end?",
+    "relevant_urls": [
+      "https://moveit.picknik.ai/main/doc/concepts/motion_planning.html",
+      "https://gazebosim.org/docs/latest/moving_robot/"
+    ]
+  },
+  {
+    "query": "How do ROS2 nodes communicate across topics and services?",
+    "relevant_urls": [
+      "https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Nodes/Understanding-ROS2-Nodes.html",
+      "https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Topics/Understanding-ROS2-Topics.html"
+    ]
+  }
+]
