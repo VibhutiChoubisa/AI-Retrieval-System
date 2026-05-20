@@ -126,88 +126,140 @@ All systems are evaluated using:
 
 ---
 
-⚙️ Reproducibility
+## ⚙️ Reproducibility
 
 This project is fully reproducible on a single machine without requiring any specialized infrastructure.
 
-1. Install dependencies
+### 1. Install dependencies
+```bash
 pip install -r requirements.txt
-2. Build dataset
+```
+
+### 2. Build dataset
+```bash
 python data/raw/extract_docs.py
-3. Run full evaluation
+```
+
+### 3. Run full evaluation
+```bash
 python -m evaluation.evaluate
-📁 Outputs
+```
+
+## 📁 Outputs
 
 After execution, the system generates the following artifacts:
-
+```bash
 results/
  ├── tradeoff.png
  ├── failure_dist.png
  ├── report.md
+```
+
 Generated outputs include:
-Latency vs accuracy trade-off curves
-Recall@5 and MRR comparison plots
-Query-level failure distribution analysis
-Auto-generated evaluation report
-❌ Failure Analysis
+1. Latency vs accuracy trade-off curves
+2. Recall@5 and MRR comparison plots
+3. Query-level failure distribution analysis
+4. Auto-generated evaluation report
+5. Failure Analysis
 
 All configurations show consistent failure patterns despite overall strong performance.
 
-Key failure modes:
-Multi-hop reasoning across multiple documents
-Ambiguous or underspecified queries
-Cross-domain queries combining:
-ROS
-MoveIt
-Gazebo
-Interpretation
+#### Key failure modes:
+- Multi-hop reasoning across multiple documents
+- Ambiguous or underspecified queries
+- Cross-domain queries combining: ROS, MoveIt, Gazebo, Interpretation
 
-These failures highlight core limitations in:
+## ❌ Failure Analysis (System-Level View)
 
-Lexical retrieval (BM25)
-Semantic embedding-based retrieval (Dense models)
+```bash
+                        RETRIEVAL SYSTEM LIMITATIONS
+┌──────────────────────────────────────────────────────────────────┐
+│                                                                  │
+│   Query Input                                                   │
+│        │                                                        │
+│        ▼                                                        │
+│  ┌───────────────┐      ┌───────────────────┐                  │
+│  │   BM25        │      │   Dense Model     │                  │
+│  │ (Lexical)     │      │ (Semantic)        │                  │
+│  └───────────────┘      └───────────────────┘                  │
+│        │                         │                              │
+│        └──────────┬──────────────┘                              │
+│                   ▼                                              │
+│           ┌──────────────────────┐                               │
+│           │      HYBRID          │                               │
+│           │ (Fusion of both)     │                               │
+│           └──────────────────────┘                               │
+│                      │                                           │
+│                      ▼                                           │
+│              ❌ FAILURE MODES                                    │
+│                                                                  │
+│   ┌──────────────────────────────────────────────────────────┐   │
+│   │  1. Multi-document reasoning failure                     │   │
+│   │     → System cannot combine distributed evidence         │   │
+│   └──────────────────────────────────────────────────────────┘   │
+│                                                                  │
+│   ┌──────────────────────────────────────────────────────────┐   │
+│   │  2. Weak query structure handling                        │   │
+│   │     → Ambiguous / underspecified queries fail            │   │
+│   └──────────────────────────────────────────────────────────┘   │
+│                                                                  │
+│   ┌──────────────────────────────────────────────────────────┐   │
+│   │  3. Representation gap                                   │   │
+│   │     → BM25 = exact match only                             │   │
+│   │     → Dense = loses technical precision                  │   │
+│   └──────────────────────────────────────────────────────────┘   │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
+```
+## 🧠 Engineering Highlights
+- Core system design
+- Hybrid retrieval pipeline (BM25 + Dense fusion)
+- FAISS-based vector similarity search
+- Cross-encoder reranking module
+- Evaluation infrastructure
+- End-to-end latency benchmarking (p95)
+- Standard IR metrics: Recall@5, MRR
+- Automated evaluation pipeline
+- Structured failure taxonomy analysis
 
-Even hybrid systems struggle when:
 
-reasoning spans multiple documents
-queries lack explicit structure
-🧠 Engineering Highlights
-Core system design
-Hybrid retrieval pipeline (BM25 + Dense fusion)
-FAISS-based vector similarity search
-Cross-encoder reranking module
-Evaluation infrastructure
-End-to-end latency benchmarking (p95)
-Standard IR metrics: Recall@5, MRR
-Automated evaluation pipeline
-Structured failure taxonomy analysis
-🔮 Future Improvements
-🔎 Retrieval
+## 🔮 Future Improvements
+#### 🔎 Retrieval
 - Reciprocal Rank Fusion (RRF)
 - LLM-based query rewriting
 - Stronger embedding models (bge-large, e5-large)
-🧮 Ranking
+#### 🧮 Ranking
 - Lightweight reranker distillation
 - Cross-encoder inference caching
-📊 Evaluation
+#### 📊 Evaluation
 - nDCG@k metrics
 - Statistical significance testing
 - Query clustering for error analysis
-🏁 Conclusion
+
+## 🏁 Conclusion
 
 This project implements a complete retrieval benchmarking system combining:
 
-Classical IR (BM25)
-Neural retrieval (dense embeddings)
-Hybrid fusion strategies
-Cross-encoder reranking
-End-to-end evaluation + diagnostics
-Real-world relevance
+- Classical IR (BM25)
+- Neural retrieval (dense embeddings)
+- Hybrid fusion strategies
+- Cross-encoder reranking
+- End-to-end evaluation + diagnostics
+
+---
+
+## 🌍 Real-World Relevance
 
 This system closely mirrors production retrieval stacks used in:
 
-Retrieval-Augmented Generation (RAG) pipelines
-Enterprise search systems
-Robotics knowledge assistants
-⚙️ Final Reproducibility Command
+- Retrieval-Augmented Generation (RAG) pipelines
+- Enterprise search systems
+- Robotics knowledge assistants
+
+---
+
+## ⚙️ Final Reproducibility Command
+
+```bash
 python -m evaluation.evaluate
+```
