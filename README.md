@@ -6,6 +6,9 @@ This project implements a **retrieval benchmarking framework** to compare classi
 
 It is designed as a **production-style IR evaluation pipeline**, not a toy experiment, and focuses on making **defensible trade-offs between accuracy, ranking quality, and latency**.
 
+<img width="1583" height="1546" alt="mermaid-diagram" src="https://github.com/user-attachments/assets/a9661a4e-28e0-4c40-96bf-9b29a777cbd3" />
+
+
 The system evaluates:
 
 - BM25 (lexical retrieval baseline)
@@ -123,12 +126,11 @@ All systems are evaluated using:
 
 ---
 
-## ⚙️ Reproducibility
+⚙️ Reproducibility
 
-This project is fully reproducible on a single machine.
+This project is fully reproducible on a single machine without requiring any specialized infrastructure.
 
-### 1. Install dependencies
-```bash
+1. Install dependencies
 pip install -r requirements.txt
 2. Build dataset
 python data/raw/extract_docs.py
@@ -136,58 +138,76 @@ python data/raw/extract_docs.py
 python -m evaluation.evaluate
 📁 Outputs
 
-After execution, the system generates:
+After execution, the system generates the following artifacts:
 
 results/
  ├── tradeoff.png
  ├── failure_dist.png
  ├── report.md
+Generated outputs include:
+Latency vs accuracy trade-off curves
+Recall@5 and MRR comparison plots
+Query-level failure distribution analysis
+Auto-generated evaluation report
 ❌ Failure Analysis
 
-The system still struggles with:
+All configurations show consistent failure patterns despite overall strong performance.
 
-Multi-hop reasoning across documents
+Key failure modes:
+Multi-hop reasoning across multiple documents
 Ambiguous or underspecified queries
-Cross-domain queries combining ROS + MoveIt + Gazebo
+Cross-domain queries combining:
+ROS
+MoveIt
+Gazebo
+Interpretation
 
-These highlight limitations of both lexical and embedding-based retrieval systems.
+These failures highlight core limitations in:
 
+Lexical retrieval (BM25)
+Semantic embedding-based retrieval (Dense models)
+
+Even hybrid systems struggle when:
+
+reasoning spans multiple documents
+queries lack explicit structure
 🧠 Engineering Highlights
-Hybrid retrieval pipeline design
-FAISS-based vector search
-Cross-encoder reranking integration
-Latency benchmarking (p95)
-Automated evaluation framework
-Failure taxonomy analysis
+Core system design
+Hybrid retrieval pipeline (BM25 + Dense fusion)
+FAISS-based vector similarity search
+Cross-encoder reranking module
+Evaluation infrastructure
+End-to-end latency benchmarking (p95)
+Standard IR metrics: Recall@5, MRR
+Automated evaluation pipeline
+Structured failure taxonomy analysis
 🔮 Future Improvements
-Retrieval
-Reciprocal Rank Fusion (RRF)
-LLM-based query rewriting
-Stronger embedding models (bge-large / e5-large)
-Ranking
-Lightweight reranker distillation
-Caching cross-encoder inference
-Evaluation
-nDCG@k metrics
-Statistical significance testing
-Query clustering analysis
+🔎 Retrieval
+- Reciprocal Rank Fusion (RRF)
+- LLM-based query rewriting
+- Stronger embedding models (bge-large, e5-large)
+🧮 Ranking
+- Lightweight reranker distillation
+- Cross-encoder inference caching
+📊 Evaluation
+- nDCG@k metrics
+- Statistical significance testing
+- Query clustering for error analysis
 🏁 Conclusion
 
-This project demonstrates a complete retrieval benchmarking pipeline combining:
+This project implements a complete retrieval benchmarking system combining:
 
 Classical IR (BM25)
 Neural retrieval (dense embeddings)
 Hybrid fusion strategies
 Cross-encoder reranking
-Full evaluation + failure analysis
+End-to-end evaluation + diagnostics
+Real-world relevance
 
-It closely mirrors real-world retrieval systems used in:
+This system closely mirrors production retrieval stacks used in:
 
-RAG pipelines
+Retrieval-Augmented Generation (RAG) pipelines
 Enterprise search systems
 Robotics knowledge assistants
-⚙️ Reproducibility Note
-
-All experiments can be reproduced using:
-
+⚙️ Final Reproducibility Command
 python -m evaluation.evaluate
