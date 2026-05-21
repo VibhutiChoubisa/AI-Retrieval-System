@@ -103,25 +103,194 @@ The system evaluates:
 - Gazebo simulation system
 - Universal Robots (UR5) control stack
 
-### 💡 Why this dataset?
+## 💡 Why this dataset?
 
-This corpus was chosen because it:
+I selected a robotics software documentation corpus (ROS 2, MoveIt, Gazebo, UR5 control stack) because it creates a **realistic and difficult retrieval environment where both lexical and semantic retrieval systems are meaningfully stress-tested**.
 
-- Contains **both structured and unstructured technical text**
-- Requires **semantic + lexical matching**
-- Includes **cross-system dependencies (ROS ↔ MoveIt ↔ Gazebo)**
-- Reflects realistic **robotics + RAG workloads**
+Unlike generic datasets (Wikipedia, news, or QA corpora), this domain has several properties that make it ideal for evaluating retrieval systems:
 
 ---
 
-## ❓ Query Set
+### 🧩 1. Cross-system dependency structure
 
-- 20 manually curated evaluation queries
-- Includes:
-  - Direct factual queries
-  - Paraphrased queries
-  - Multi-hop reasoning queries
-  - Ambiguous “real user-like” queries
+The information is not self-contained within single documents:
+
+- ROS 2 provides base communication and system primitives  
+- MoveIt depends on ROS 2 for motion planning  
+- Gazebo integrates both for simulation  
+- UR5 adds hardware-specific control layers  
+
+This creates **multi-document dependency chains**, where correct retrieval often requires understanding relationships across systems rather than single-document matching.
+
+---
+
+### 🔍 2. Mixed lexical + semantic retrieval requirements
+
+The corpus contains a combination of:
+
+- exact technical tokens (CLI commands, API names, parameters)
+- descriptive explanations (natural language documentation)
+- configuration-heavy content (YAML, launch files, code snippets)
+
+This forces a trade-off:
+
+- BM25 performs well on exact token overlap
+- Dense models perform better on semantic paraphrasing
+- Hybrid systems are required to balance both
+
+This makes it ideal for evaluating **retrieval system behavior under mixed signal conditions**.
+
+---
+
+### ⚙️ 3. Real-world ambiguity in queries
+
+User-style queries in this domain are often:
+
+- underspecified (“robot control setup”)
+- cross-domain (“MoveIt planning in Gazebo”)
+- paraphrased or informal versions of documentation titles
+
+This directly exposes whether a retrieval system can handle **intent ambiguity**, which is a key failure mode in production RAG systems.
+
+---
+
+### 🧠 4. High relevance to production retrieval systems
+
+This dataset closely mirrors real-world use cases such as:
+
+- robotics engineering assistants
+- enterprise technical documentation search
+- RAG pipelines over API + system docs
+
+Unlike synthetic datasets, this corpus reflects **actual retrieval workloads where correctness depends on system integration knowledge**.
+
+---
+
+### 🎯 Summary
+
+This dataset was chosen because it simultaneously stresses:
+
+- lexical retrieval (exact tokens, commands)
+- semantic retrieval (paraphrased queries)
+- cross-document reasoning (multi-system dependencies)
+
+making it ideal for a **fair and meaningful comparison of BM25, dense, and hybrid retrieval systems under realistic conditions**.
+
+---
+
+## ❓ Query Set Design
+
+The evaluation uses **20 manually curated queries**, each mapped to one or more ground-truth documents using relevant source URLs. The goal is not to test keyword matching, but to evaluate how well each retrieval system handles **realistic user intent under ambiguity and compositional reasoning**.
+
+Each query is designed to simulate **production-style retrieval behavior in robotics documentation search systems**.
+
+---
+
+## 🧪 Query Categories
+
+### 1. Direct factual queries (low ambiguity)
+
+These test baseline retrieval accuracy where the answer is explicitly documented.
+
+Examples:
+- *“What is a ROS2 node and how does it work?”*
+- *“How do I install ROS2 on Ubuntu?”*
+- *“How to install Gazebo simulator?”*
+
+These evaluate whether systems can perform **exact and near-exact document matching**.
+
+---
+
+### 2. Conceptual / explanatory queries (medium difficulty)
+
+These require understanding relationships between concepts rather than keyword overlap.
+
+Examples:
+- *“How do ROS2 topics enable communication?”*
+- *“What is MoveIt motion planning?”*
+- *“What is planning scene in MoveIt?”*
+
+These test whether dense and hybrid retrieval can outperform BM25 in **semantic understanding tasks**.
+
+---
+
+### 3. Comparative and multi-document queries (high difficulty)
+
+These require synthesizing information across multiple documents.
+
+Examples:
+- *“Explain ROS2 services vs actions”*
+- *“How does robot motion planning pipeline work end-to-end?”*
+- *“How do ROS2 nodes communicate across topics and services?”*
+
+These are designed to expose failure cases in:
+- single-document retrieval assumptions
+- weak cross-document connectivity in embeddings
+
+---
+
+### 4. Real-world ambiguous queries (production-like noise)
+
+These simulate how real users actually search documentation systems.
+
+Examples:
+- *“How do I use MoveIt Python API?”*
+- *“How do I start UR robot driver?”*
+- *“What is UR simulation in Gazebo?”*
+
+These queries are intentionally:
+- underspecified
+- partial-title-based
+- context-dependent
+
+They test whether retrieval systems can infer **intent rather than literal matching**.
+
+---
+
+## 🔗 Ground-truth labeling strategy
+
+Each query is manually mapped to one or more authoritative documentation URLs from:
+
+- ROS2 documentation
+- MoveIt framework docs
+- Gazebo simulation docs
+- Universal Robots ROS integration docs
+
+This ensures:
+- deterministic evaluation
+- reproducible Recall@5 and MRR computation
+- fair comparison across all retrieval methods
+
+---
+
+## 🎯 Design Rationale
+
+This query set was designed to stress-test retrieval systems along three axes:
+
+### 1. Lexical vs semantic mismatch
+Some queries require exact token overlap (BM25 strength), while others require paraphrase understanding (dense strength).
+
+### 2. Single-hop vs multi-hop retrieval
+Certain queries require combining multiple concepts across documents, exposing limitations in flat similarity search.
+
+### 3. Realistic user behavior modeling
+Queries are not “clean benchmarks”; they reflect:
+- partial knowledge queries
+- informal phrasing
+- documentation-style search patterns
+
+---
+
+## 🧠 Summary
+
+This query set ensures that evaluation is not biased toward any single retrieval paradigm. Instead, it enforces a balanced stress test across:
+
+- lexical retrieval (BM25)
+- semantic retrieval (dense embeddings)
+- hybrid ranking systems
+- reranking refinement
+
+The result is a **robust and production-relevant evaluation of retrieval system behavior under realistic query conditions**.
 
 ---
 
@@ -335,6 +504,277 @@ All configurations show consistent failure patterns despite overall strong perfo
 - Automated evaluation pipeline
 - Structured failure taxonomy analysis
 
+---
+## 🧪 Full Debugging Analysis: Understanding What the Results Really Meant
+
+When the initial evaluation results were generated, the numbers appeared inconsistent with standard retrieval expectations. Instead of immediately assuming model failure, the system was treated as a **debuggable pipeline composed of three interacting components**:
+
+1. Corpus and document structure  
+2. Retrieval models (BM25, Dense, Hybrid)  
+3. Evaluation and labeling mechanism  
+
+The key realization was that **retrieval performance cannot be interpreted independently of data quality and evaluation consistency**.
+
+---
+
+## 📉 1. Initial Observed Results and Why They Looked Suspicious
+
+The first evaluation produced the following pattern:
+
+- **BM25: 0.30 Recall@5**
+- **Dense: 0.20 Recall@5**
+- **Hybrid: 0.20 Recall@5 with high latency**
+
+At face value, this suggested:
+
+- BM25 was underperforming but still functional
+- Dense retrieval was significantly failing
+- Hybrid retrieval was not improving results, which contradicts standard IR theory
+
+This pattern is unusual because in most retrieval systems:
+> Hybrid ≥ max(BM25, Dense)
+
+So the system behavior indicated a **deeper issue beyond model quality**.
+
+---
+
+## 🔍 2. Understanding BM25 Performance (0.30 Recall)
+
+BM25 performed better than dense models, but still lower than expected for a structured technical corpus.
+
+### Why BM25 worked partially:
+- The dataset contains many **explicit technical tokens**
+  - ROS2
+  - MoveIt
+  - URDF
+  - Gazebo commands
+- These tokens match directly with query terms
+- BM25 naturally excels at **exact lexical overlap**
+
+### Why BM25 still underperformed:
+- Queries were not purely keyword-based
+- Many queries were paraphrased or conceptual
+- Documentation contains long explanations where keywords are diluted
+
+### Interpretation:
+BM25 was functioning correctly, but the **query complexity exceeded pure lexical matching capacity**.
+
+---
+
+## 🧠 3. Dense Retrieval Failure (0.20 Recall)
+
+Dense retrieval performed significantly worse than expected.
+
+This was the most important anomaly in the system.
+
+### Hypothesis 1: Domain mismatch
+
+The model used:
+```
+sentence-transformers/all-MiniLM-L6-v2
+```
+
+This is a:
+- general-purpose semantic embedding model
+- not trained specifically for robotics or technical documentation retrieval
+
+### Effect:
+- ROS-specific terms (e.g., “ros2 launch”, “planning scene”) are not well represented in embedding space
+- Semantic similarity becomes overly generalized
+
+➡️ Result: queries map to **semantically similar but irrelevant documents**
+
+---
+
+### Hypothesis 2: Document noise problem
+
+The corpus consisted of:
+- scraped HTML pages
+- documentation with boilerplate headers/footers
+- mixed-quality extraction
+
+Dense models are sensitive to:
+> irrelevant text inside embeddings diluting semantic meaning
+
+Unlike BM25, which ignores irrelevant words, dense embeddings **compress entire document meaning into a single vector**, causing signal loss.
+
+---
+
+### Hypothesis 3: No chunking strategy
+
+Documents were embedded as full pages instead of semantic chunks.
+
+This created a major issue:
+
+- multiple topics per document
+- single embedding represents mixed intent
+
+Example:
+- installation instructions + API reference + examples all in one document
+
+➡️ embedding becomes **averaged representation of unrelated concepts**
+
+This leads to retrieval mismatch even when query is correct.
+
+---
+
+## ⚙️ 4. Hybrid Retrieval Failure (0.20 Recall + High Latency)
+
+Hybrid retrieval was expected to outperform both BM25 and Dense models.
+
+Instead, it underperformed both.
+
+### Expected behavior:
+- BM25 handles lexical precision
+- Dense handles semantic similarity
+- Fusion improves robustness
+
+### Observed behavior:
+- worse recall than BM25
+- no improvement from Dense signals
+- increased latency
+
+---
+
+### Root Cause 1: Poor score fusion calibration
+
+BM25 and dense scores operate on:
+- different numerical scales
+- different distributions
+
+Without proper normalization:
+
+➡️ one signal dominates or cancels the other
+
+This leads to:
+> ineffective or destructive fusion
+
+---
+
+### Root Cause 2: Reranker interference
+
+Cross-encoder reranker was applied on top candidates.
+
+However:
+- candidate set was large
+- reranker dominated final ranking
+- but retrieval quality feeding reranker was already weak
+
+So reranker was optimizing:
+> already poor candidate pool
+
+➡️ improving ranking locally but not improving recall
+
+---
+
+## 🚨 5. Critical Insight: Evaluation vs Retrieval Mismatch
+
+A deeper issue was discovered during debugging:
+
+The evaluation system was partially undercounting correct retrievals due to:
+
+- URL formatting differences
+- case sensitivity issues
+- inconsistent canonicalization
+
+Example:
+
+Expected:
+```
+/Tutorials/ROS2-Nodes
+```
+
+Retrieved:
+```
+/tutorials/ros2-nodes
+```
+
+These are semantically identical but treated as different labels.
+
+---
+
+### Impact of this issue:
+
+- Dense retrieval was penalized more heavily
+- Hybrid system appeared worse than actual performance
+- BM25 appeared relatively stronger than it should be
+
+This led to a key realization:
+
+> The evaluation pipeline itself was introducing noise into the performance measurement.
+
+---
+
+## 📊 6. Query-Level Behavioral Breakdown
+
+After correcting assumptions, results were reinterpreted by query type:
+
+| Query Type              | Best Performing System |
+|------------------------|------------------------|
+| Exact technical terms  | BM25                   |
+| Paraphrased queries    | Dense                  |
+| Ambiguous queries      | Hybrid                 |
+| Multi-hop queries      | Hybrid + reranker      |
+
+This revealed an important insight:
+
+> Retrieval performance is not global — it is conditional on query structure.
+
+---
+
+## ⚡ 7. Latency Analysis and System Trade-offs
+
+Latency behavior showed a clear scaling pattern:
+
+- candidate_k = 20 → highest recall, highest latency
+- candidate_k = 10 → balanced performance
+- candidate_k = 5 → fastest, slightly lower recall
+
+### Key observation:
+Latency was dominated not by BM25 or Dense retrieval, but by:
+> cross-encoder reranking stage
+
+This means:
+- retrieval is cheap
+- reranking is expensive
+
+---
+
+## 🧠 Final Interpretation: What Actually Happened
+
+The system did not simply “fail”.
+
+Instead, three overlapping issues were discovered:
+
+### 1. Model limitations
+- Dense embeddings not domain-tuned
+- BM25 limited to lexical overlap
+
+### 2. Data structure issues
+- noisy scraped documents
+- no chunking strategy
+
+### 3. Evaluation pipeline mismatch
+- URL canonicalization inconsistency
+- partial label mismatch
+
+---
+
+## 🎯 Final Insight
+
+The project evolved from:
+
+> “comparing retrieval models”
+
+to:
+
+> “debugging a full retrieval + evaluation system under realistic constraints”
+
+This is the key production-level insight:
+
+> In real-world IR systems, performance is jointly determined by model quality, data structure, and evaluation correctness — not just retrieval architecture.
+
+---
 
 ## 🔮 Future Improvements
 #### 🔎 Retrieval
