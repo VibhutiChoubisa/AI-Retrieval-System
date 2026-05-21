@@ -1,0 +1,13 @@
+numpy
+pandas
+scikit-learn
+matplotlib
+tqdm
+beautifulsoup4
+requests
+sentence-transformers
+faiss-cpu
+rank-bm25
+scipy
+torch
+transformers
