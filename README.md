@@ -770,7 +770,7 @@ to:
 
 > “debugging a full retrieval + evaluation system under realistic constraints”
 
-This is the key production-level insight:
+So the final key insight is:
 
 > In real-world IR systems, performance is jointly determined by model quality, data structure, and evaluation correctness — not just retrieval architecture.
 
